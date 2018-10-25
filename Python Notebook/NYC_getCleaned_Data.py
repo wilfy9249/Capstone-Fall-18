@@ -75,7 +75,7 @@ class DataFrameImputer(TransformerMixin):
 
 data = crime_remCol.iloc[:,0:15].values
 XBefore = pd.DataFrame(data)
-xt = DataFrameImputer().fit_transform(XBefore)
+cleanedData = DataFrameImputer().fit_transform(XBefore)
 
 
 
