@@ -1,42 +1,33 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
-###------NYC DATA CRIME-----###
-
-
-# In[2]:
-
-
 # Data exploration
 import pandas as pd
 
 # Numerical
 import numpy as np
 
-
 ## Read CSV
 crimes_original = pd.read_csv('../Data/NYPD_Complaint_Data_Historic.csv', low_memory=False)
-
-#Drop unnecessary features
+crimes_original.isnull().sum()
+crimes_original.describe(include = [np.number])
+crimes_original.describe(include = [np.object])
 crime_remCol = crimes_original.drop(['CMPLNT_NUM','KY_CD','JURIS_DESC','ADDR_PCT_CD','PD_CD','PARKS_NM','HADEVELOPT','X_COORD_CD','Y_COORD_CD'], axis=1)
 
-
-crime_filter = crime_remCol['CMPLNT_FR_DT'].value_counts(dropna=False)
+#print(crime_remCol)
 
 # Fill CMPLNT_TO_DT NaNs with CMPLNT_FR_DT values.
 crime_remCol['CMPLNT_TO_DT'].fillna(crime_remCol['CMPLNT_FR_DT'], axis = 0, inplace = True)
+crime_remCol['CMPLNT_FR_DT'].fillna(crime_remCol['CMPLNT_TO_DT'], axis = 0, inplace = True)
 
 # Fill CMPLNT_TO_TM NaNs with CMPLNT_FR_TM values.
 crime_remCol['CMPLNT_TO_TM'].fillna(crime_remCol['CMPLNT_FR_TM'], axis = 0, inplace = True)
+crime_remCol['CMPLNT_FR_TM'].fillna(crime_remCol['CMPLNT_TO_TM'], axis = 0, inplace = True)
 
 # All NaNs from 'PD_DESC' series are filled with copy of 'OFNS_DESC' values
-crime_remCol['OFNS_DESC'] = np.where(crime_remCol['OFNS_DESC'].isnull(), crime_remCol['PD_DESC'], crime_remCol['OFNS_DESC']) # There is pandas equivalent of np.where -> https://stackoverflow.com/questions/38579532/pandas-equivalent-of-np-where
+crime_remCol['OFNS_DESC'] = np.where(crime_remCol['OFNS_DESC'].isnull(), crime_remCol['PD_DESC'], crime_remCol['OFNS_DESC'])
 # And vice versa
 crime_remCol['PD_DESC'] = np.where(crime_remCol['PD_DESC'].isnull(), crime_remCol['OFNS_DESC'], crime_remCol['PD_DESC'])
-
 
 #Remove Nan for premises.
 prem_typ_desc_copy = crime_remCol['PREM_TYP_DESC'].copy(deep = True)
@@ -47,37 +38,24 @@ crime_remCol['PREM_TYP_DESC'] = crime_remCol['PREM_TYP_DESC'].apply(lambda x: np
                           replace = True, p = prem_typ_desc_copy_rand ) if (x == np.nan) else x).astype(str)
 
 
-X = crime_remCol.iloc[:,0:15].values
+#Fill the location of occurance desc with max count
+crime_remCol['LOC_OF_OCCUR_DESC'].fillna(value ='INSIDE', axis = 0, inplace = True)
+#crime_remCol.isnull().sum()
 
+crime_filt1 = crime_remCol.dropna(subset=['CMPLNT_FR_DT', 'CMPLNT_TO_DT'],how = "all")
+crime_filt2 = crime_filt1.dropna(subset=['CMPLNT_FR_TM', 'CMPLNT_TO_TM'],how = "all")
+crime_filt3 = crime_filt2.dropna(subset=['CRM_ATPT_CPTD_CD'],how = "all")
+crime_filt4 = crime_filt3.dropna(subset=['BORO_NM'],how = "all")
+crime_filt5 = crime_filt4.dropna(subset=['Latitude','Longitude','Lat_Lon'],how = "all")
 
-from sklearn.base import TransformerMixin
+#crime_filt5.shape
+#crime_filt5.isnull().sum()
 
-class DataFrameImputer(TransformerMixin):
-    def __init__(self):
-        """Impute missing values.
+#To check the count of rows
+#crime_filt5['LOC_OF_OCCUR_DESC'].value_counts(dropna=True)
 
-        Columns of dtype object are imputed with the most frequent value 
-        in column.
-
-        Columns of other types are imputed with mean of column.
-
-        """
-    def fit(self, X, y=None):
-
-        self.fill = pd.Series([X[c].value_counts().index[0]
-            if X[c].dtype == np.dtype('O') else X[c].mean() for c in X],
-            index=X.columns)
-
-        return self
-
-    def transform(self, X, y=None):
-        return X.fillna(self.fill)
-
-data = crime_remCol.iloc[:,0:15].values
-XBefore = pd.DataFrame(data)
-cleanedData = DataFrameImputer().fit_transform(XBefore)
-
-
+data = crime_filt5.iloc[:,0:15].values
+cleanedData = pd.DataFrame(data)
 
 def getCleanedData():
     return cleanedData
