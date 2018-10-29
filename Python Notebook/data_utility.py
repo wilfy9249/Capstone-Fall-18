@@ -6,22 +6,22 @@
 
 import numpy as np
 import pandas as pd
-
+import os
 
 # In[2]:
 
 
 #function to get current directory
 def getCurrentDirectory():
-    import os
-    print(os.listdir('../'))
+    listDirectory = os.listdir('../')
+    return listDirectory
 
 
 # In[3]:
 
 
 #function to read csv file
-def readCSVfile(path):
+def readCsvFile(path):
     crimes_original = pd.read_csv(path, low_memory=False)
     return crimes_original
 

@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 
 ## Read CSV
-crimes_original = pd.read_csv('../Data/NYPD_Complaint_Data_Historic.csv', low_memory=False)
+crimes_original = pd.read_csv('../Data/NYPD_Complaint_Data_Cleaned.csv', low_memory=False)
 crimes_original.isnull().sum()
 crimes_original.describe(include = [np.number])
 crimes_original.describe(include = [np.object])
@@ -47,6 +47,10 @@ crime_filt2 = crime_filt1.dropna(subset=['CMPLNT_FR_TM', 'CMPLNT_TO_TM'],how = "
 crime_filt3 = crime_filt2.dropna(subset=['CRM_ATPT_CPTD_CD'],how = "all")
 crime_filt4 = crime_filt3.dropna(subset=['BORO_NM'],how = "all")
 crime_filt5 = crime_filt4.dropna(subset=['Latitude','Longitude','Lat_Lon'],how = "all")
+cleanedDf = crime_filt5.copy()
+
+def getCleanedDataFrame():
+    return cleanedDf
 
 #crime_filt5.shape
 #crime_filt5.isnull().sum()
