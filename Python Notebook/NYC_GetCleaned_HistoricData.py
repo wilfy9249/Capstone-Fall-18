@@ -3,16 +3,15 @@
 
 # Data exploration
 import pandas as pd
-
-# Numerical
 import numpy as np
+
 
 ## Read CSV
 crimes_original = pd.read_csv('../Data/NYPD_Complaint_Data_Cleaned.csv', low_memory=False)
 crimes_original.isnull().sum()
 crimes_original.describe(include = [np.number])
 crimes_original.describe(include = [np.object])
-crime_remCol = crimes_original.drop(['CMPLNT_NUM','KY_CD','JURIS_DESC','ADDR_PCT_CD','PD_CD','PARKS_NM','HADEVELOPT','X_COORD_CD','Y_COORD_CD'], axis=1)
+crime_remCol = crimes_original.drop(['CMPLNT_NUM','KY_CD','JURIS_DESC','PD_CD','PARKS_NM','HADEVELOPT','X_COORD_CD','Y_COORD_CD'], axis=1)
 
 #print(crime_remCol)
 
