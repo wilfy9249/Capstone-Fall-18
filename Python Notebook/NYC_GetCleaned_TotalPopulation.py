@@ -24,6 +24,7 @@ dropColPop.drop(['Age Group','1950 - Boro share of NYC total','1960 - Boro share
                  '2030 - Boro share of NYC total','2040 - Boro share of NYC total'], axis=1, inplace=True)
 dropColPop
 
+dropColPop['Borough'] = dropColPop['Borough'].str.upper()
 
 def getMeanPopulation(borough, index):
     boroList = dropColPop['Borough'][1:6]
