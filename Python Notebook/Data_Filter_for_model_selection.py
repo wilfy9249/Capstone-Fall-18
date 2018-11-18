@@ -37,8 +37,6 @@ dfCopy['CMPLNT_FR_DT'] = dfCopy['CMPLNT_FR_DT'].apply(lambda x: eliminate_dates(
 dfCopy['StartTime'] = dfCopy['CMPLNT_FR_DT'] +' '+dfCopy['CMPLNT_FR_TM']
 #dfCopy['StartTime'] = dfCopy['CMPLNT_FR_TM']
 dfCopy['StartTime'] = pd.to_datetime(dfCopy['StartTime'])
-
-
 #set full date as index
 dfCopy.set_index('StartTime', inplace=True)        
 
