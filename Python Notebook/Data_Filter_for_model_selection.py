@@ -11,7 +11,7 @@ import pandas as pd
 import numpy as np
 
 
-# In[2]:
+# In[27]:
 
 
 #import the functions from their corresponding files
@@ -69,14 +69,14 @@ dfCopy.set_index('StartTime', inplace=True)
 dfCopy.head()
 
 
-# In[6]:
+# In[28]:
 
 
 df_data = dfCopy.copy()
 df_data['Time'] = df_data.index.hour
 
 
-# In[7]:
+# In[29]:
 
 
 df_data['Morning'] = df_data['Time'].between(06.01,12.0)
@@ -85,89 +85,91 @@ df_data['Evening'] = df_data['Time'].between(17.01,20.0)
 df_data['Night'] = df_data['Time'].between(20.01,06.0)
 
 
-# In[8]:
+# In[30]:
 
 
 data = df_data.drop(['CMPLNT_FR_DT','CMPLNT_FR_TM','CMPLNT_TO_DT','CMPLNT_TO_TM','RPT_DT','ADDR_PCT_CD','Latitude','Longitude','Lat_Lon','Shape_Area','Shape_Leng','the_geom'],axis=1)
 
 
-# In[9]:
+# In[31]:
 
 
 filter_data = filterData(data,'Precinct',44)
 
 
-# In[10]:
+# In[32]:
 
 
-temp = filter_data['OFNS_DESC'].value_counts().head(5).reset_index()
+temp = filter_data['OFNS_DESC'].value_counts().head(3).reset_index()
 temp
 
 
-# In[11]:
+# In[33]:
 
 
 ofns_data = filter_data.loc[filter_data['OFNS_DESC'].isin(temp['index'])]
 
 
-# In[12]:
+# In[34]:
 
 
 ofns_data['OFNS_DESC'].value_counts()
 
 
-# In[13]:
+# In[35]:
 
 
 ofns_data
 
 
-# In[14]:
+# In[36]:
 
 
 ofns_data.shape
 
 
-# In[15]:
+# In[37]:
 
 
-temp_prem = ofns_data['PREM_TYP_DESC'].value_counts().head(5).reset_index()
+temp_prem = ofns_data['PREM_TYP_DESC'].value_counts().head(3).reset_index()
 temp_prem
 
 
-# In[16]:
+# In[38]:
 
 
 final_data = ofns_data.loc[ofns_data['PREM_TYP_DESC'].isin(temp_prem['index'])]
 
 
-# In[17]:
+# In[39]:
 
 
 final_data.shape
 
 
-# In[18]:
+# In[40]:
 
 
 final_data
 
 
-# In[21]:
+# In[41]:
 
 
 def getFinalData():
     return final_data
 
 
-# In[22]:
+# In[42]:
 
 
 final_data['PREM_TYP_DESC'].value_counts(dropna=False)
 
 
-# In[26]:
+# In[43]:
 
+
+final_data.shape
 
 
 # In[ ]:
