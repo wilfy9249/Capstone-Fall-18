@@ -1,40 +1,18 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 # Data exploration
 import pandas as pd
 
 # Numerical
 import numpy as np
 
-
-# In[27]:
-
-
 #import the functions from their corresponding files
 from NYC_GetCleaned_PrecinctData import getPrecinctData
 from data_utility import filterData,sortValue,getCount
-
-
-# In[3]:
-
 
 #Get cleaned data from NYC_GetCleaned_HistoricData
 crimes_original = getPrecinctData()
 #crimes_original.head()
 
-
-# In[4]:
-
-
 crimes_original.shape
-
-
-# In[5]:
-
 
 """Create a datetime index of times that crimes were reported to have been committed"""
 
@@ -68,112 +46,79 @@ dfCopy.set_index('StartTime', inplace=True)
 
 dfCopy.head()
 
-
-# In[28]:
-
-
 df_data = dfCopy.copy()
 df_data['Time'] = df_data.index.hour
 
 
-# In[29]:
+# In[7]:
 
 
-df_data['Morning'] = df_data['Time'].between(06.01,12.0)
+df_data['Morning'] = df_data['Time'].between(00.00,12.0)
 df_data['Afternoon'] = df_data['Time'].between(12.01,17.0)
 df_data['Evening'] = df_data['Time'].between(17.01,20.0)
-df_data['Night'] = df_data['Time'].between(20.01,06.0)
+df_data['Night'] = df_data['Time'].between(20.01,23.59)
 
 
-# In[30]:
+# In[8]:
 
 
-data = df_data.drop(['CMPLNT_FR_DT','CMPLNT_FR_TM','CMPLNT_TO_DT','CMPLNT_TO_TM','RPT_DT','ADDR_PCT_CD','Latitude','Longitude','Lat_Lon','Shape_Area','Shape_Leng','the_geom'],axis=1)
+data = df_data.drop(['CMPLNT_FR_DT','BORO_NM','CMPLNT_FR_TM','CMPLNT_TO_DT','CMPLNT_TO_TM','RPT_DT','ADDR_PCT_CD','Latitude','Longitude','Lat_Lon','Shape_Area','Shape_Leng','the_geom'],axis=1)
 
 
-# In[31]:
+# In[9]:
 
 
 filter_data = filterData(data,'Precinct',44)
 
 
-# In[32]:
+# In[10]:
 
 
 temp = filter_data['OFNS_DESC'].value_counts().head(3).reset_index()
 temp
 
 
-# In[33]:
+# In[11]:
 
 
 ofns_data = filter_data.loc[filter_data['OFNS_DESC'].isin(temp['index'])]
 
 
-# In[34]:
+# In[12]:
 
 
 ofns_data['OFNS_DESC'].value_counts()
 
 
-# In[35]:
+# In[13]:
 
 
 ofns_data
 
 
-# In[36]:
+# In[14]:
 
 
 ofns_data.shape
 
 
-# In[37]:
+# In[15]:
 
 
 temp_prem = ofns_data['PREM_TYP_DESC'].value_counts().head(3).reset_index()
 temp_prem
 
 
-# In[38]:
-
-
 final_data = ofns_data.loc[ofns_data['PREM_TYP_DESC'].isin(temp_prem['index'])]
-
-
-# In[39]:
-
 
 final_data.shape
 
-
-# In[40]:
-
-
 final_data
-
-
-# In[41]:
 
 
 def getFinalData():
     return final_data
 
 
-# In[42]:
-
-
 final_data['PREM_TYP_DESC'].value_counts(dropna=False)
-
-
-# In[43]:
-
-
 final_data.shape
-
-
-# In[ ]:
-
-
-
-
